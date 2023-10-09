@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WsReactExample.Shared", "Shared\WsReactExample.Shared.fsproj", "{E6553F06-0A18-49C7-BAA5-4D52E9D56158}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WsReactExample.Server", "Server\WsReactExample.Server.fsproj", "{950A7393-D1C4-47A6-907B-788DB9168F01}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WsReactExample.Client", "Client\WsReactExample.Client.fsproj", "{A35C5F90-7457-458B-B66A-6377B73EF846}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E6553F06-0A18-49C7-BAA5-4D52E9D56158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6553F06-0A18-49C7-BAA5-4D52E9D56158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6553F06-0A18-49C7-BAA5-4D52E9D56158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6553F06-0A18-49C7-BAA5-4D52E9D56158}.Release|Any CPU.Build.0 = Release|Any CPU
+		{950A7393-D1C4-47A6-907B-788DB9168F01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{950A7393-D1C4-47A6-907B-788DB9168F01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{950A7393-D1C4-47A6-907B-788DB9168F01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{950A7393-D1C4-47A6-907B-788DB9168F01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A35C5F90-7457-458B-B66A-6377B73EF846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A35C5F90-7457-458B-B66A-6377B73EF846}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A35C5F90-7457-458B-B66A-6377B73EF846}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A35C5F90-7457-458B-B66A-6377B73EF846}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
