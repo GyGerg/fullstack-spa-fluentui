@@ -6,14 +6,9 @@ open WebSharper.Sitelets
 type EndPointWithCors =
     | [<EndPoint "GET /user">] GetUser of Id: int 
 
-type DocsEndpoint =
-    | [<EndPoint "/">] Docs
-    | [<EndPoint "/get-value">] GetValue
-
 type EndPoint =
     | [<EndPoint "/">] Home
     | [<EndPoint "/">] EndPointWithCors of Cors<EndPointWithCors>
-    | [<EndPoint "/docs">] DocsEndpoint of DocsEndpoint
     
 type User =
     { 

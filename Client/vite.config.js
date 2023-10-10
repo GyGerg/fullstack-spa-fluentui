@@ -8,5 +8,9 @@ export default defineConfig(() => ({
         jsxInject: `import React from 'react'`
         // jsxFactory: 'h',
         // jsxFragment: 'Fragment'
+    },
+    resolve: {
+        extensions: ['.js', '.jsx'],
+        alias: '.jsx'
     }
 }))

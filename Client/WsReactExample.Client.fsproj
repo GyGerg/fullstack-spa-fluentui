@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FluentUi.fs" />
     <Compile Include="Client.fs" />
     <None Include="wsconfig.json" />
   </ItemGroup>
