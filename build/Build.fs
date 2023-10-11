@@ -129,11 +129,11 @@ let continueOrExitOnFail (pr: ProcessResult) =
 let (</>) path1 path2 = Path.combine path1 path2
 
 let deployDir = "dist"
-let serverDir = Path.getFullName "../src/Server"
+let serverDir = Path.getFullName "../src/server"
 let server = Path.getFullName (serverDir </> "Server.fsproj")
-let clientDir = Path.getFullName "../src/Client"
+let clientDir = Path.getFullName "../src/client"
 let client = Path.getFullName (clientDir </> "Client.fsproj")
-let sharedDir = Path.getFullName "../src/Shared"
+let sharedDir = Path.getFullName "../src/shared"
 let shared = Path.getFullName (sharedDir </> "Shared.fsproj")
 
 let bld = DotNet.build (fun o ->  
