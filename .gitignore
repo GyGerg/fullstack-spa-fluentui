@@ -5,7 +5,6 @@ Scripts/
 node_modules/
 dist/
 /dist/
-/build/
 /packages/
 /tools/packages/
 bin/

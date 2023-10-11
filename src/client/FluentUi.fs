@@ -35,5 +35,5 @@ module FluentUi =
         </{CompoundButton}>
     """
     // [<Name "FluentProvider">] 
-    let inline fluentProvider (props: obj) ([<System.ParamArray>] children: React.Element array) = 
-        React.CreateElement(JS.Import("FluentProvider",fluentComponents), props, children)
+    let inline fluentProvider (props: obj) ([<System.ParamArray>] children: React.Element seq) = 
+        React.CreateElement(JS.Import("FluentProvider",fluentComponents), props, Array.ofSeq children)
