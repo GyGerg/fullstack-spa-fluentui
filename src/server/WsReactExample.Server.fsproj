@@ -8,7 +8,7 @@
     <Compile Include="Startup.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shared\WsReactExample.Shared.fsproj" />
+    <ProjectReference Include="..\shared\WsReactExample.Shared.fsproj" />
   </ItemGroup>
-  <Import Project="..\.paket\Paket.Restore.targets" />
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
