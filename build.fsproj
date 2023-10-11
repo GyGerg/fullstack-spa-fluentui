@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Build.fs" />
+    <Compile Include="build/Build.fs" />
   </ItemGroup>
   <ItemGroup>
         <PackageReference Include="Fake.Core.Target" Version="6.0.0" />
