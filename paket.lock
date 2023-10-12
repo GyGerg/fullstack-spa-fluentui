@@ -3,7 +3,7 @@ STRATEGY: MIN
 RESTRICTION: || (== net6.0) (== netstandard2.0)
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    FSharp.Core (6.0)
+    FSharp.Core (7.0.400)
     HtmlAgilityPack (1.11)
       System.Net.Http (>= 4.3.2)
       System.Xml.XmlDocument (>= 4.3)
