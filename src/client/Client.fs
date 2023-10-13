@@ -49,11 +49,12 @@ module Client =
                         this.SetState({this.State with count = (this.State.count - 1)}, fun _ -> printfn $"{this.State.count}")
                     )
 
-            FluentUi.fluentProvider {|
-                theme = FluentUi.Themes.teamsLightTheme
-            |} [|
+            FluentUi.fluentProvider [
+                "theme", FluentUi.Themes.teamsLightTheme
+            ] [|
                     div [
                         attr.style {|display="flex"; margin="5px"; flexDirection="row";|}
+                        
                         
                     ] [
                         addBtn
@@ -62,9 +63,39 @@ module Client =
                     ]
                 |]
 
+    let FunctionComponent (f: 'props -> React.Element) (props: 'props) : React.Element =
+        React.CreateElement(f, box props)
+
+    let FluentFunctionExample() = 
+        FunctionComponent (fun props ->
+            let cnt, setCnt = React.UseState 0
+            FluentUi.fluentProvider [
+                "theme", FluentUi.Themes.teamsLightTheme
+            ] [
+                div [
+                    
+                    attr.style {|
+                        display="flex"
+                        flexDirecton="row"
+                        margin="15px"
+                    |}
+                ] [
+                    FluentUi.Components.compoundButton [
+                        "appearance", "primary"
+                        on.click (fun _ -> setCnt.Invoke(cnt+1))
+                    ] [text "Increment"]
+                    span [] [text $"{cnt}"]
+                    FluentUi.Components.compoundButton [
+                        "appearance", "primary"
+                        on.click (fun _ -> setCnt.Invoke(cnt-1))
+                    ] [text "Decrement"]
+                ]
+            ]
+        ) []
+
     [<SPAEntryPoint>]
     let Main () =
         fetchVal()
         // let root = createRoot (JS.Document.GetElementById "root")
         let root = ReactDom.CreateRoot(JS.Document.GetElementById "root")
-        root.Render(React.Make FluentExample ())
+        root.Render(FluentFunctionExample())
