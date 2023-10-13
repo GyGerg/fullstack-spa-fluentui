@@ -20,8 +20,6 @@ module FluentUi =
         let addRegular = JS.Import<obj>("AddRegular", fluentIcons)
         [<Inline; Name "DeleteRegular">] 
         let deleteRegular = JS.Import<obj>("DeleteRegular", fluentIcons)
-
-        let inline iconComponent (icon:obj) = JS.Html $"""<{icon} />"""
     // [<Name "CompoundButton">] 
 
     [<Inline>] 

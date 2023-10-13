@@ -2,6 +2,13 @@ module Service
 
 open WebSharper
 open WebSharper.Sitelets
+open WsReactExample.Shared
+
+
+let SharedApi : IApi= {
+    GetValue = fun  () -> async {return "hellotext" }
+}
+// WebSharper.Core.Remoting.AddHandler typeof<IApi> SharedApi
 
 type EndPointWithCors =
     | [<EndPoint "GET /user">] GetUser of Id: int 
@@ -24,6 +31,7 @@ let HandleApi ctx endpoint =
 [<Website>]
 let Main =
     Application.MultiPage (fun ctx endpoint ->
+        
         match endpoint with
         | Home -> Content.Text "Service version 1.0"
         | EndPointWithCors endpoint ->

@@ -55,6 +55,11 @@ let wsWatch directory =
     |> CreateProcess.withWorkingDirectory directory
     |> CreateProcess.ensureExitCode
 
+let serverWatch directory =
+    CreateProcess.fromRawCommandLine "dotnet" "watch"
+    |> CreateProcess.withWorkingDirectory directory
+    |> CreateProcess.ensureExitCode
+
 module Proc =
     module Parallel =
         open System
@@ -171,7 +176,8 @@ Target.create "Prepare" (fun _ ->
 
 Target.create "Run" (fun _ ->
     [
-        "server", wsWatch serverDir
+        // "server", wsWatch serverDir
+        "server", serverWatch serverDir
         "client", wsWatch clientDir
         "vite", viteRun clientDir
     ]

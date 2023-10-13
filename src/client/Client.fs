@@ -4,28 +4,18 @@ open WebSharper
 open WebSharper.React.Html
 open WebSharper.JavaScript
 open WebSharper.React
-open WebSharper.Remoting
 
 [<JavaScript>]
 module Client =
-    
     let api = Remote<WsReactExample.Shared.IApi>
     let fetchVal() = 
-        task {
+        async {
             let! hello = api.GetValue()
             printfn $"{hello}"
         }
-        |> Async.AwaitTask
         |> Async.StartImmediate
 
-
-    // built-in React.Mount threw some errors around
-    type ReactRoot =
-        [<Name "render">] 
-        member inline _.Render(element:React.Element) : unit = JS.Import("render", "react-dom/client") element
-
-    let inline createRoot (element:Dom.Element) : ReactRoot = JS.Import("createRoot", "react-dom/client") element
-
+    type ReactDom = ReactDOM.Bindings.ReactDomClient
     type FluentExampleState = {
         count: int
         name: string
@@ -36,7 +26,6 @@ module Client =
         inherit React.Component<FluentExampleProps,FluentExampleState>()
         do
             this.SetInitialState {count = 0; name = "Nevenincs"}
-
 
 
         override this.Render() =
@@ -55,29 +44,27 @@ module Client =
                 FluentUi.compoundButtonInline 
                     "Subtract" 
                     "decrement"  
-                    // (JS.Html $"""{{<{FluentUi.Icons.deleteRegular} />}}""") 
                     (React.CreateElement(FluentUi.Icons.deleteRegular, {||}))
                     (fun e -> 
                         this.SetState({this.State with count = (this.State.count - 1)}, fun _ -> printfn $"{this.State.count}")
-                        )
+                    )
 
             FluentUi.fluentProvider {|
                 theme = FluentUi.Themes.teamsLightTheme
             |} [|
                     div [
-                        "style", {|display="flex"; margin="5px"; flexDirection="row";|}
+                        attr.style {|display="flex"; margin="5px"; flexDirection="row";|}
+                        
                     ] [
                         addBtn
-                        span ["style", {|fontSize = "2rem"|}] [text $"{this.State.count}"]
+                        span [attr.style {|fontSize = "2rem"|}] [text $"{this.State.count}"]
                         decrementBtn
                     ]
                 |]
 
     [<SPAEntryPoint>]
     let Main () =
-        Console.Log "test log"
-        let root = createRoot (JS.Document.GetElementById "root")
+        fetchVal()
+        // let root = createRoot (JS.Document.GetElementById "root")
+        let root = ReactDom.CreateRoot(JS.Document.GetElementById "root")
         root.Render(React.Make FluentExample ())
-
-        // React.Make FluentExample ()
-        // |> React.Mount (JS.Document.GetElementById "root")

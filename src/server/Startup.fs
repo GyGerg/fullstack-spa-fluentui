@@ -4,13 +4,17 @@ open Microsoft.Extensions.Hosting
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open WebSharper.AspNetCore
+open WsReactExample.Shared
+
 
 [<EntryPoint>]
 let main args =
     let builder = WebApplication.CreateBuilder(args)
     
     // Add services to the container.
-    builder.Services.AddWebSharper()
+    builder.Services
+        .AddWebSharper()
+        .AddWebSharperRemoting<IApi>(Service.SharedApi)
     |> ignore
 
     let app = builder.Build()
@@ -22,8 +26,17 @@ let main args =
             .UseHsts()
         |> ignore
 
+    WebSharper.Web.Remoting.DisableCsrfProtection ()
+    WebSharper.Web.Remoting.AddAllowedOrigin "*"
+
     app.UseHttpsRedirection()
-        .UseWebSharperSitelets(fun ws -> ws.Sitelet(Service.Main) |> ignore)
+        .UseWebSharper(fun bld -> 
+            bld
+                .UseRemoting(true)
+                .Sitelet(Service.Main)
+            |> ignore)
+        // .UseWebSharperSitelets(fun bld -> bld.Sitelet(Service.Main) |> ignore)
+        // legalább lássam hogy mi volt a terv ezzel
     |> ignore
     
     app.Run()
