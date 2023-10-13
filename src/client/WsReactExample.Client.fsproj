@@ -6,6 +6,7 @@
   <ItemGroup>
     <Compile Include="../shared/Shared.fs" />
     <Compile Include="FluentUi.fs" />
+    <Compile Include="Components.fs" />
     <Compile Include="Client.fs" />
     <None Include="wsconfig.json" />
   </ItemGroup>

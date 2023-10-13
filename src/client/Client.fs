@@ -4,6 +4,8 @@ open WebSharper
 open WebSharper.React.Html
 open WebSharper.JavaScript
 open WebSharper.React
+open FluentUi.Bindings
+// open FluentUi.Components
 
 [<JavaScript>]
 module Client =
@@ -31,25 +33,25 @@ module Client =
         override this.Render() =
         
             let addBtn  = 
-                FluentUi.compoundButtonInline 
+                compoundButtonInline 
                     "Add" 
                     "increment" 
                     // (JS.Html $"""{{<{FluentUi.Icons.addRegular} />}}""") 
-                    (React.CreateElement(FluentUi.Icons.addRegular, {||}))
+                    (React.CreateElement(FluentUi.Icons.AddRegular, {||}))
                     (fun e -> 
                         this.SetState {this.State with count = (this.State.count + 1); name = "Nev"}
                         printfn $"{this.State.count}"
                         )
             let decrementBtn = 
-                FluentUi.compoundButtonInline 
+                compoundButtonInline 
                     "Subtract" 
                     "decrement"  
-                    (React.CreateElement(FluentUi.Icons.deleteRegular, {||}))
+                    (React.CreateElement(``type``=FluentUi.Icons.DeleteRegular<string>, props={||}))
                     (fun e -> 
                         this.SetState({this.State with count = (this.State.count - 1)}, fun _ -> printfn $"{this.State.count}")
                     )
 
-            FluentUi.fluentProvider [
+            fluentProvider [
                 "theme", FluentUi.Themes.teamsLightTheme
             ] [|
                     div [
@@ -69,7 +71,7 @@ module Client =
     let FluentFunctionExample() = 
         FunctionComponent (fun props ->
             let cnt, setCnt = React.UseState 0
-            FluentUi.fluentProvider [
+            FluentUi.Components.fluentProvider [
                 "theme", FluentUi.Themes.teamsLightTheme
             ] [
                 div [
@@ -80,15 +82,15 @@ module Client =
                         margin="15px"
                     |}
                 ] [
-                    FluentUi.Components.compoundButton [
-                        "appearance", "primary"
-                        on.click (fun _ -> setCnt.Invoke(cnt+1))
-                    ] [text "Increment"]
-                    span [] [text $"{cnt}"]
-                    FluentUi.Components.compoundButton [
-                        "appearance", "primary"
-                        on.click (fun _ -> setCnt.Invoke(cnt-1))
-                    ] [text "Decrement"]
+                    JS.Html $"""
+                    <{CompoundButton} onClick={fun _ -> setCnt.Invoke(cnt+1)} appearance="primary" icon={{<{FluentUi.Icons.AddRegular} />}}>
+                        Increment
+                    </{CompoundButton}>
+                    <span style={ {|fontSize= "2rem"|} }>{cnt}</span>
+                    <{CompoundButton} onClick={fun _ -> setCnt.Invoke(cnt-1)} appearance="brand" icon={{<{FluentUi.Icons.DeleteRegular} />}}>
+                        Decrement
+                    </{CompoundButton}>
+                    """
                 ]
             ]
         ) []
