@@ -49,7 +49,7 @@ namespace FluentUi
         let [<Inline>] CardPreview<'a> = JS.Import<'a>("CardPreview",fluentComponents)
 
         let [<Inline>] Checkbox<'a> = JS.Import<'a>("Checkbox", fluentComponents)
-        let [<Inline>] Combobox<'a> = JS.Import<'a>("Combokbox", fluentComponents)
+        let [<Inline>] Combobox<'a> = JS.Import<'a>("Combobox", fluentComponents)
         
         let [<Inline>] Option<'a> = JS.Import<'a>("Option", fluentComponents)
         let [<Inline>] Listbox<'a> = JS.Import<'a>("Listbox", fluentComponents)

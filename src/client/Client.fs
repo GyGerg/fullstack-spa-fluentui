@@ -83,6 +83,7 @@ module Client =
                     |}
                 ] [
                     JS.Html $"""
+                    <>
                     <{CompoundButton} onClick={fun _ -> setCnt.Invoke(cnt+1)} appearance="primary" icon={{<{FluentUi.Icons.AddRegular} />}}>
                         Increment
                     </{CompoundButton}>
@@ -90,6 +91,7 @@ module Client =
                     <{CompoundButton} onClick={fun _ -> setCnt.Invoke(cnt-1)} appearance="brand" icon={{<{FluentUi.Icons.DeleteRegular} />}}>
                         Decrement
                     </{CompoundButton}>
+                    </>
                     """
                 ]
             ]
