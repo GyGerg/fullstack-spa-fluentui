@@ -1,11 +1,13 @@
 ﻿namespace WsReactExample.Client
 
+open Elmish
 open WebSharper
 open WebSharper.React.Html
 open WebSharper.JavaScript
 open WebSharper.React
-open FluentUi.Bindings
-// open FluentUi.Components
+open WebSharper.Elmish.React
+open WebSharper.FluentUI.React.Components
+module Icons = WebSharper.FluentUI.React.Icons
 
 [<JavaScript>]
 module Client =
@@ -17,62 +19,20 @@ module Client =
         }
         |> Async.StartImmediate
 
-    type ReactDom = ReactDOM.Bindings.ReactDomClient
+    type ReactDom = ReactDOM.ReactDomClient
     type FluentExampleState = {
         count: int
         name: string
     }
 
-    type FluentExampleProps = unit
-    type FluentExample() as this =
-        inherit React.Component<FluentExampleProps,FluentExampleState>()
-        do
-            this.SetInitialState {count = 0; name = "Nevenincs"}
-
-
-        override this.Render() =
-        
-            let addBtn  = 
-                compoundButtonInline 
-                    "Add" 
-                    "increment" 
-                    // (JS.Html $"""{{<{FluentUi.Icons.addRegular} />}}""") 
-                    (React.CreateElement(FluentUi.Icons.AddRegular, {||}))
-                    (fun e -> 
-                        this.SetState {this.State with count = (this.State.count + 1); name = "Nev"}
-                        printfn $"{this.State.count}"
-                        )
-            let decrementBtn = 
-                compoundButtonInline 
-                    "Subtract" 
-                    "decrement"  
-                    (React.CreateElement(``type``=FluentUi.Icons.DeleteRegular<string>, props={||}))
-                    (fun e -> 
-                        this.SetState({this.State with count = (this.State.count - 1)}, fun _ -> printfn $"{this.State.count}")
-                    )
-
-            fluentProvider [
-                "theme", FluentUi.Themes.teamsLightTheme
-            ] [|
-                    div [
-                        attr.style {|display="flex"; margin="5px"; flexDirection="row";|}
-                        
-                        
-                    ] [
-                        addBtn
-                        span [attr.style {|fontSize = "2rem"|}] [text $"{this.State.count}"]
-                        decrementBtn
-                    ]
-                |]
-
     let FunctionComponent (f: 'props -> React.Element) (props: 'props) : React.Element =
         React.CreateElement(f, box props)
-
-    let FluentFunctionExample() = 
+        
+    let FluentFunctionExample (props:'props) = 
         FunctionComponent (fun props ->
             let cnt, setCnt = React.UseState 0
-            FluentUi.Components.fluentProvider [
-                "theme", FluentUi.Themes.teamsLightTheme
+            FluentUI.React.Helpers.fluentProvider [
+                "theme", FluentUI.React.Themes.teamsLightTheme
             ] [
                 div [
                     
@@ -84,22 +44,58 @@ module Client =
                 ] [
                     JS.Html $"""
                     <>
-                    <{CompoundButton} onClick={fun _ -> setCnt.Invoke(cnt+1)} appearance="primary" icon={{<{FluentUi.Icons.AddRegular} />}}>
+                    <{CompoundButton} onClick={fun _ -> setCnt.Invoke(cnt+1)} appearance="primary" icon={{<{Icons.AddRegular} />}}>
                         Increment
                     </{CompoundButton}>
-                    <span style={ {|fontSize= "2rem"|} }>{cnt}</span>
-                    <{CompoundButton} onClick={fun _ -> setCnt.Invoke(cnt-1)} appearance="brand" icon={{<{FluentUi.Icons.DeleteRegular} />}}>
+                    <span>Szöveg</span>
+                    <span style={{{{fontSize: "2rem"}}}} {{...props}}>{cnt}</span>
+                    <{CompoundButton} onClick={fun _ -> setCnt.Invoke(cnt-1)} appearance="brand" icon={{<{Icons.DeleteRegular} />}}>
                         Decrement
                     </{CompoundButton}>
                     </>
                     """
                 ]
             ]
-        ) []
+        ) props
+
+    type Message = 
+    | Increment
+    | Decrement
+
+    type Model = {
+        asd: int
+    }
+
+    let init () = 
+        { asd = 0}, Cmd.none
+    type Asd = Dispatch<Model>
+
+    let update msg model =
+        match msg with
+        | Increment -> {model with asd = model.asd+1}, Cmd.none
+        | Decrement -> {model with asd = model.asd-1}, Cmd.none
+
+    [<Inline>]
+    let buttonInline click icon (text:string) : React.Element =
+        JS.Html $"""<{CompoundButton} onClick={click} appearance="primary" icon={{<{icon} />}}>
+                {text}
+            </{CompoundButton}>"""
+    let view model dispatch = 
+        FluentUI.React.Helpers.fluentProvider [
+            "theme", FluentUI.React.Themes.teamsDarkTheme
+        ] [
+
+            buttonInline (fun _ -> dispatch Increment) Icons.AddRegular "Increment"
+            text $"%i{model.asd}"
+            buttonInline (fun _ -> dispatch Decrement) Icons.SubtractRegular "Decrement"
+        ]
+        
 
     [<SPAEntryPoint>]
     let Main () =
         fetchVal()
-        // let root = createRoot (JS.Document.GetElementById "root")
-        let root = ReactDom.CreateRoot(JS.Document.GetElementById "root")
-        root.Render(FluentFunctionExample())
+        
+        Program.mkProgram init update view
+        |> Program.withReactSynchronous "root"
+        |> Program.run
+        // let root = ReactDom.CreateRoot(JS.Document.Ge

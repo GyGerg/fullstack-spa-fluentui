@@ -1,4 +1,7 @@
 WebSharper
 WebSharper.FSharp
-WebSharper.UI
 WebSharper.React
+WebSharper.Elmish.React
+WebSharper.FluentUi.React.Components
+WebSharper.FluentUi.React.Icons
+Elmish

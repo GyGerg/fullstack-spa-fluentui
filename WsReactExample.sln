@@ -9,6 +9,10 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WsReactExample.Client", "sr
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "build", "build.fsproj", "{55759BAE-94F8-44A5-9F9D-4506727D7E7D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9C2E2EAE-1721-4E36-AAEA-58B9BD696F4A}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WsReactExample.Shared", "src\shared\WsReactExample.Shared.fsproj", "{2F827DCE-2E52-4DCD-AC9C-BF9A2864CC5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,12 @@ Global
 		{55759BAE-94F8-44A5-9F9D-4506727D7E7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55759BAE-94F8-44A5-9F9D-4506727D7E7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55759BAE-94F8-44A5-9F9D-4506727D7E7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F827DCE-2E52-4DCD-AC9C-BF9A2864CC5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F827DCE-2E52-4DCD-AC9C-BF9A2864CC5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F827DCE-2E52-4DCD-AC9C-BF9A2864CC5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F827DCE-2E52-4DCD-AC9C-BF9A2864CC5D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2F827DCE-2E52-4DCD-AC9C-BF9A2864CC5D} = {9C2E2EAE-1721-4E36-AAEA-58B9BD696F4A}
 	EndGlobalSection
 EndGlobal
