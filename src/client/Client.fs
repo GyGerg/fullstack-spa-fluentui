@@ -27,53 +27,23 @@ module Client =
 
     let FunctionComponent (f: 'props -> React.Element) (props: 'props) : React.Element =
         React.CreateElement(f, box props)
-        
-    let FluentFunctionExample (props:'props) = 
-        FunctionComponent (fun props ->
-            let cnt, setCnt = React.UseState 0
-            FluentUI.React.Helpers.fluentProvider [
-                "theme", FluentUI.React.Themes.teamsLightTheme
-            ] [
-                div [
-                    
-                    attr.style {|
-                        display="flex"
-                        flexDirecton="row"
-                        margin="15px"
-                    |}
-                ] [
-                    JS.Html $"""
-                    <>
-                    <{CompoundButton} onClick={fun _ -> setCnt.Invoke(cnt+1)} appearance="primary" icon={{<{Icons.AddRegular} />}}>
-                        Increment
-                    </{CompoundButton}>
-                    <span>Szöveg</span>
-                    <span style={{{{fontSize: "2rem"}}}} {{...props}}>{cnt}</span>
-                    <{CompoundButton} onClick={fun _ -> setCnt.Invoke(cnt-1)} appearance="brand" icon={{<{Icons.DeleteRegular} />}}>
-                        Decrement
-                    </{CompoundButton}>
-                    </>
-                    """
-                ]
-            ]
-        ) props
 
     type Message = 
     | Increment
     | Decrement
 
     type Model = {
-        asd: int
+        Count: int
     }
 
     let init () = 
-        { asd = 0}, Cmd.none
+        { Count = 0}, Cmd.none
     type Asd = Dispatch<Model>
 
     let update msg model =
         match msg with
-        | Increment -> {model with asd = model.asd+1}, Cmd.none
-        | Decrement -> {model with asd = model.asd-1}, Cmd.none
+        | Increment -> {model with Count = model.Count+1}, Cmd.none
+        | Decrement -> {model with Count = model.Count-1}, Cmd.none
 
     [<Inline>]
     let buttonInline click icon (text:string) : React.Element =
@@ -86,7 +56,7 @@ module Client =
         ] [
 
             buttonInline (fun _ -> dispatch Increment) Icons.AddRegular "Increment"
-            text $"%i{model.asd}"
+            text $"%i{model.Count}"
             buttonInline (fun _ -> dispatch Decrement) Icons.SubtractRegular "Decrement"
         ]
         
