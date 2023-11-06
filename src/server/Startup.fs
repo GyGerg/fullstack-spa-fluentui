@@ -29,7 +29,8 @@ let main args =
     WebSharper.Web.Remoting.DisableCsrfProtection ()
     WebSharper.Web.Remoting.AddAllowedOrigin "*"
 
-    app.UseHttpsRedirection()
+    app
+        // .UseHttpsRedirection()
         .UseWebSharper(fun bld -> 
             bld
                 .UseRemoting(true)
