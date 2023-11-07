@@ -2,6 +2,7 @@
 open WebSharper
 
 type IApi = {
-    [<Remote>]
-    GetValue : unit -> Async<string>
+    [<Remote>] GetValue : unit -> Async<string>
+
+    [<Remote>] GetFundraisers: unit -> Async<FundraiserInfoServer array>
 }

@@ -14,9 +14,11 @@ nuget WebSharper.AspNetCore prerelease
 nuget WebSharper.React prerelease
 nuget WebSharper.Elmish ~> 4.0.2.350-beta1
 nuget WebSharper.Elmish.React prerelease
-nuget WebSharper.FluentUi.React.Components prerelease
 nuget WebSharper.FluentUi.React.Icons prerelease
 nuget Elmish
+
+source ../localnuget
+nuget WebSharper.FluentUi.React.Components prerelease
 
 group wsbuild
     git https://github.com/dotnet-websharper/build-script dotnettool

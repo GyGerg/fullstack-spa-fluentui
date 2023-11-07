@@ -4,6 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Api.fs" />
+    <Compile Include="Domain.fs" />
+    <Compile Include="pages/Counter.fs" />
+    <Compile Include="pages/Fundraisers.fs" />
+    <Compile Include="pages/Showcase.fs" />
+    <Compile Include="pages/Settings.fs" />
+    <Compile Include="components/Sidebar.fs" />
+    <Compile Include="components/Topbar.fs" />
     <Compile Include="Client.fs" />
     <None Include="wsconfig.json" />
   </ItemGroup>

@@ -28,15 +28,15 @@ let main args =
 
     WebSharper.Web.Remoting.DisableCsrfProtection ()
     WebSharper.Web.Remoting.AddAllowedOrigin "*"
+    
 
     app.UseHttpsRedirection()
         .UseWebSharper(fun bld -> 
             bld
                 .UseRemoting(true)
-                .Sitelet(Service.Main)
+                // .Sitelet(Service.Main)
             |> ignore)
         // .UseWebSharperSitelets(fun bld -> bld.Sitelet(Service.Main) |> ignore)
-        // legalább lássam hogy mi volt a terv ezzel
     |> ignore
     
     app.Run()

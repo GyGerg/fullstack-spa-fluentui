@@ -7,8 +7,30 @@ open WsReactExample.Shared
 
 let SharedApi : IApi= {
     GetValue = fun  () -> async {return "hellotext" }
+    GetFundraisers = fun () -> async {
+        return [|
+        {
+            Name="Forgot to turn off EC2 instance, help"
+            FundraiserLink=None
+            Owner={|
+                Name="Noname"
+            |}
+            OwnerLink=None
+            Goal=50000
+        }
+        {
+            Name="Monyee for a Geometre dash"
+            FundraiserLink=None
+            Owner={|
+                Name="Kimblee Geoffrey"
+            |}
+            OwnerLink=None
+            Goal=853500
+        }
+    |]
+    }
 }
-// WebSharper.Core.Remoting.AddHandler typeof<IApi> SharedApi
+WebSharper.Core.Remoting.AddHandler typeof<IApi> SharedApi
 
 type EndPointWithCors =
     | [<EndPoint "GET /user">] GetUser of Id: int 
