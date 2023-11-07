@@ -4,6 +4,13 @@ body {
     padding:0;
     margin:0;
 }
+.dialogClass {
+    margin-right: 0px !important;
+    margin-top: 3rem !important;
+    margin-bottom: 0px !important;
+    height: 100% !important;
+    /* margin-top: 1rem !important; */
+}
 
 .menu {
     grid-area: menu;
@@ -34,6 +41,8 @@ body {
 
 .sidebar {
     grid-area: nav;
+    /* position: sticky; */
+    /* z-index: 4000000; */
     height: 100%;
     min-width: 0px;
     overflow-y: auto;
@@ -47,6 +56,8 @@ body {
 
 .header {
     grid-area: header;
+    /* position: sticky; */
+    /* z-index: 5000000; */
     column-gap: 0.5rem;
     display: flex;
     flex-direction: row;
@@ -58,6 +69,12 @@ body {
     height: 100%;
     width: 100%;
 }
+
+/* .content .dialogContainer {
+    position: absolute;
+    right: 50 !important;
+    z-index: 1000 !important;
+} */
 
 .sidebar.open {
     grid-template-columns: 1fr max-content;

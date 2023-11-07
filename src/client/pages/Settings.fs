@@ -8,9 +8,11 @@ module SettingsPage =
     open WebSharper.React.Html
     type Model = {
         UseDarkMode: bool
+        UseTeamsTheme: bool
     }
     type SettingsMessage = 
     | DarkModeChange of bool
+    | ThemeChange of bool
 
 
     let view model dispatch =
@@ -23,9 +25,15 @@ module SettingsPage =
                 checked={model.UseDarkMode}
                 label="Use Dark Mode"
             />
+            <{Components.Switch} 
+                onChange={new System.Action<obj, obj>(fun (evt:obj) (data:obj) -> dispatch (ThemeChange data?``checked``))}
+                checked={model.UseTeamsTheme}
+                label="Use Teams Theme"
+            />
             </div>"""
     let update msg model =
         match msg with
         | DarkModeChange d -> {model with UseDarkMode=d}
+        | ThemeChange th -> {model with UseTeamsTheme=th}
 
         , Elmish.Cmd.none

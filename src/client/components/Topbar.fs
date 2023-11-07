@@ -56,12 +56,19 @@ module Topbar =
             "modalType", "non-modal"
         ] [
             Helpers.Dialog.trigger [] [trigger]
-            Helpers.Dialog.surface [] [
+            Helpers.Dialog.surface [
+                "className", "dialogClass"
+                "mountNode", {|className= "dialogContainer"|}
+            ] [
                 ReactHelpers.Elt DialogContent [] [
                     Helpers.Dialog.title [] [
                         // Html.h3 [] [Html.text "Settings"]
                     ]
-                    ReactHelpers.Elt DialogContent [] [
+                    ReactHelpers.Elt DialogContent [
+                        "style", {|
+                            align="right"
+                        |}
+                    ] [
                         WsReactExample.Client.Pages.SettingsPage.view settingsState dispatch  
                     ]
                     Helpers.Dialog.actions [
@@ -71,6 +78,7 @@ module Topbar =
                     ]
                 ]
             ]
+                        
         ]
 
     
@@ -90,34 +98,39 @@ module Topbar =
             ReactHelpers.Elt MenuItem ["color", Styling.tokens.colorPaletteRedForeground1; "style", {|color=Styling.tokens.colorPaletteRedForeground1|}] [Html.text "Log Out"]
         ]
 
-    let inline private SettingsButton settingsState settingsDispatch = 
+    let inline private SettingsButton textColor settingsState settingsDispatch = 
         JS.jsx $"""
             <{Components.Tooltip} relationship="label" withArrow content="Settings">
                 <{Components.Button}
-                    icon={{<{Icons.SettingsFilled}/>}}
+                    icon={{<{Icons.SettingsFilled} color={textColor}/>}}
                     shape="circular"
                     appearance="transparent"
                 />
             </{Components.Tooltip}>"""
         |> WrapInSettingsDialog settingsState settingsDispatch
-
-    let inline private NotificationsButton notifications =
+    let inline private NotificationsButton textColor notifications =
         JS.jsx $"""
-                <{Components.Tooltip} relationship="label" withArrow content="Notifications">
+                <{Components.Tooltip} relationship="label" withArrow content="Notifications" >
                     <{Components.Button}
-                        icon={{<{Icons.AlertBadgeFilled}/>}}
+                        icon={{<{Icons.AlertBadgeFilled} color={textColor}/>}}
                         shape="circular"
                         appearance="transparent"
                     />
                 </{Components.Tooltip}>
         """
         |> WrapInPopover (notifications |> Seq.map NotificationElt)
-    let render settingsState settingsDispatch (title:string) : React.Element =
-        JS.jsx $"""<header className="header" style={ {|backgroundColor=Styling.tokens.colorBrandBackground |} } >
+
+    let render (settingsState:WsReactExample.Client.Pages.SettingsPage.Model) settingsDispatch (title:string) : React.Element =
+
+        let backgroundColorToken = if settingsState.UseDarkMode then Styling.tokens.colorBrandBackground2 else Styling.tokens.colorBrandBackground
+        let textColorToken = if settingsState.UseDarkMode then Styling.tokens.colorBrandForeground2 else Styling.tokens.colorNeutralForegroundInverted
+        JS.jsx $"""<header className="header" style={ {|
+            backgroundColor=backgroundColorToken; 
+            color=textColorToken |} } >
             <h3>{title}</h3>
             <div style={ {|marginLeft="auto"; display="flex"; flexDirection="row"; justifyContent="end"; alignItems="center"; columnGap="0.5rem"; paddingRight="1rem" |} }>
-                {SettingsButton settingsState settingsDispatch}
-                {NotificationsButton [
+                {SettingsButton textColorToken settingsState settingsDispatch}
+                {NotificationsButton textColorToken [
                     {Title="Notification";Content="Congrats for your notification!"}
                     {Title="Another one";Content="Wow someone's famous!"}
                 ]}

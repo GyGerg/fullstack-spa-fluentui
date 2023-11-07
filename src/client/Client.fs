@@ -8,6 +8,7 @@ open WebSharper.React
 open WebSharper.Elmish.React
 open WebSharper.FluentUI.React.Components
 module Icons = FluentUI.React.Icons
+open WebSharper.FluentUI.React.Styling
 
 open WsReactExample.Client.Pages
 
@@ -31,6 +32,7 @@ module Client =
             Counter = fst <| CounterPage.init()
             Settings = {
                 UseDarkMode = false
+                UseTeamsTheme = false
             }
             Fundraisers = {
                 Fundraisers = [||]
@@ -80,9 +82,11 @@ module Client =
 
     
     let view model dispatch = 
+        let darkTheme = if model.Settings.UseTeamsTheme then Themes.teamsDarkTheme else Themes.webDarkTheme
+        let lightTheme = if model.Settings.UseTeamsTheme then Themes.teamsLightTheme else Themes.webLightTheme
         JS.jsx $"""
             
-            <{FluentProvider} theme={if model.Settings.UseDarkMode then FluentUI.React.Styling.Themes.webDarkTheme else FluentUI.React.Styling.Themes.webLightTheme}>
+            <{FluentProvider} theme={if model.Settings.UseDarkMode then darkTheme else lightTheme}>
                 <div className="fluentRoot">
                     {Components.Topbar.render model.Settings (SettingsMsg >> dispatch) (nameof(WsReactExample)) }
                     {lazyView2 Components.Sidebar.view model.Sidebar (SidebarMsg >> dispatch)}
@@ -105,6 +109,7 @@ module Client =
                                 | Domain.Pages.Showcase -> ShowcasePage.render()
                             )
                         }
+                        <aside className="dialogContainer" id="dialogContainer"></aside>
                     </div>
                 </div>
             </{FluentProvider}>
