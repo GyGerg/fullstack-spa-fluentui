@@ -35,13 +35,21 @@ module CounterPage =
         }, Elmish.Cmd.none
     
     let view model dispatch : React.Element =
-        JS.jsx $"""
-            <div style={ {|display="flex"; flexDirection="column"; rowGap="50px"; padding="2rem";|} }>
-                <h3>Counter</h3>
-                <div style={ {| display="flex"; flexDirection="row"; justifyContent="center"; alignItems="center"; columnGap="20px"|} }>
-                    {buttonInline (fun _ -> dispatch Increment) Icons.AddRegular "Increment"}
-                    {$"%i{model.Count}"}
-                    {buttonInline (fun _ -> dispatch Decrement) Icons.SubtractRegular "Decrement"}
-                </div>
-            </div>
-        """
+        Helpers.card [
+            "onClick", ignore
+            "style", {|rowGap="50px";|}
+        ] [
+            Helpers.cardHeader [] [Html.h3 [] [Html.text "Counter"]]
+            Helpers.cardPreview [] [
+                Html.div [
+                    "style", {| display="flex"; flexDirection="row"; justifyContent="center"; alignItems="center"; columnGap="20px"|}
+                ] [
+                    buttonInline (fun _ -> dispatch Increment) Icons.AddRegular "Increment"
+                    Html.text $"%i{model.Count}"
+                    buttonInline (fun _ -> dispatch Decrement) Icons.SubtractRegular "Decrement"
+                ]
+            ]
+            Helpers.cardFooter [] [
+                Html.text "footer helye"
+            ]
+        ]

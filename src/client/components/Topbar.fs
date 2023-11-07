@@ -53,7 +53,7 @@ module Topbar =
 
     let [<Inline>] private WrapInSettingsDialog settingsState dispatch trigger =
         Helpers.dialog [
-            "modalType", "non-modal"
+            "modalType", "modal"
         ] [
             Helpers.Dialog.trigger [] [trigger]
             Helpers.Dialog.surface [
@@ -127,6 +127,7 @@ module Topbar =
         JS.jsx $"""<header className="header" style={ {|
             backgroundColor=backgroundColorToken; 
             color=textColorToken |} } >
+            <{Components.Button} appearance="transparent" icon={{<{Icons.GridDotsFilled} color={textColorToken} as="div" />}} size="large" />
             <h3>{title}</h3>
             <div style={ {|marginLeft="auto"; display="flex"; flexDirection="row"; justifyContent="end"; alignItems="center"; columnGap="0.5rem"; paddingRight="1rem" |} }>
                 {SettingsButton textColorToken settingsState settingsDispatch}

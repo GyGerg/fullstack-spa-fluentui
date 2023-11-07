@@ -19,12 +19,14 @@ module Client =
     | SettingsMsg of SettingsPage.SettingsMessage
     | FundraisersMsg of FundraisersPage.Message
     | SidebarMsg of Components.Sidebar.Message
+    | ShowcaseMsg of ShowcasePage.Message
 
     type Model = {
         Counter: CounterPage.Model
         Settings: SettingsPage.Model
         Fundraisers: FundraisersPage.Model
         Sidebar: Components.Sidebar.Model
+        Showcase: ShowcasePage.Model
     }
 
     let init () = 
@@ -38,6 +40,7 @@ module Client =
                 Fundraisers = [||]
             }
             Sidebar = fst <| Components.Sidebar.init()
+            Showcase = fst <| ShowcasePage.init()
         }, Cmd.none
 
     // let inline spread a = !...a
@@ -54,6 +57,9 @@ module Client =
         | FundraisersMsg fundraisersMsg ->
             let newFundraisers, fundraisersCmd = FundraisersPage.update fundraisersMsg model.Fundraisers
             {model with Fundraisers = newFundraisers}, Cmd.map FundraisersMsg fundraisersCmd
+        | ShowcaseMsg showcaseMsg ->
+            let newShowcase, showcaseCmd = ShowcasePage.update showcaseMsg model.Showcase
+            {model with Showcase = newShowcase}, showcaseCmd
         | SidebarMsg sidebarMsg -> 
             let newSidebar, sidebarCmd = Components.Sidebar.update (sidebarMsg) model.Sidebar
             match sidebarMsg with
@@ -106,7 +112,7 @@ module Client =
                                 | Domain.Pages.Counter -> lazyView2 CounterPage.view model.Counter (CounterMsg >> dispatch)
                                 | Domain.Pages.Fundraisers -> lazyView2 FundraisersPage.view model.Fundraisers (FundraisersMsg >> dispatch)
                                 | Domain.Pages.Settings -> lazyView2 SettingsPage.view model.Settings (SettingsMsg >> dispatch)
-                                | Domain.Pages.Showcase -> ShowcasePage.render()
+                                | Domain.Pages.Showcase -> ShowcasePage.view model.Showcase (ShowcaseMsg >> dispatch)
                             )
                         }
                         <aside className="dialogContainer" id="dialogContainer"></aside>

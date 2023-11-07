@@ -47,7 +47,9 @@ module Sidebar =
 
     [<Inline>]
     let inline private pageTab isOpen ({Icon=icon;TabValue=tabValue;Name=name}:TabInfo) : React.Element =
-        JS.jsx $"""<{Components.Tab} key={tabValue} value={tabValue} content={if isOpen then name else ""} icon={{<{icon}/>}}/>"""
+        JS.jsx $"""<{Components.Tab} 
+            style={ {|columnGap=if isOpen then "0.5rem" else "0px"|} }
+            key={tabValue} value={tabValue} icon={{<{icon}/>}}><span className="tabText">{name}</span></{Components.Tab}>"""
 
     [<Inline>]
     let inline private tabsTitle (isOpen:bool) (title:string) =
@@ -75,8 +77,9 @@ module Sidebar =
                     content="Toggle Sidebar on/off"
                 >
                     <{Components.Button} 
-                        icon={{<{Icons.LineHorizontal3Regular} fontSize="4rem" />}} appearance="transparent"  
-                        style={ {|paddingLeft=Styling.tokens.spacingHorizontalL; paddingRight="0px"; paddingBottom=Styling.tokens.spacingVerticalXS; paddingTop=Styling.tokens.spacingVerticalL; margin="0px"; width="100%" |} }
+                        size="large"
+                        icon={{<{Icons.LineHorizontal3Regular} as="div" />}} appearance="transparent"  
+                        style={ {| margin="0px"; width="100%" |} }
                         onClick={fun () -> dispatch ToggleOpen}
                     ></{Components.Button}>
                 </{Components.Tooltip}>

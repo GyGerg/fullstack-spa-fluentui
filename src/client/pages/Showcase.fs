@@ -6,11 +6,28 @@ open WebSharper.FluentUI.React
 open WebSharper.FluentUI.React.Components
 [<JavaScript>]
 module ShowcasePage =
-    let render () =
+
+    type Model = {
+        SelectedTab: string
+    }
+
+    type Message = 
+    | SelectedTabChanged of string
+
+    let init () =
+        {SelectedTab="szoveg1"}, Elmish.Cmd.none
+    
+    let update msg model =
+        match msg with
+        | SelectedTabChanged tab ->
+            {model with SelectedTab=tab}, Elmish.Cmd.none
+    let view model dispatch =
         Html.div [] [
-            Helpers.tabList [] [
-                Helpers.tab [] [Html.text "Tab 1"]
-                Helpers.tab [] [Html.text "Tab 2"]
+            Helpers.tabList [
+                "selectedValue", model.SelectedTab; 
+                "onTabSelect", new System.Action<obj,{|value:string|}>(fun a b -> dispatch (SelectedTabChanged b.value))] [
+                Helpers.tab ["value", "szoveg1"] [Html.text "Tab 1"]
+                Helpers.tab ["value", "szoveg2"] [Html.text "Tab 2"]
             ]
 
             Helpers.card [] [

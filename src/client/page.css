@@ -6,10 +6,31 @@ body {
 }
 .dialogClass {
     margin-right: 0px !important;
-    margin-top: 3rem !important;
+    margin-top: 3.5rem !important;
     margin-bottom: 0px !important;
     height: 100% !important;
+    border-radius: 0 !important;
     /* margin-top: 1rem !important; */
+}
+
+
+.tabText {
+    padding-left: 2px;
+    /* overflow-x: hidden;
+    min-width: none;
+    transition-property: width;
+    transition-duration: var(--durationFaster);
+    transition-timing-function: var(--curveDecelerateMax); */
+
+}
+.sidebar .tabText {
+    width: 0px;
+    display:block;
+}
+
+.sidebar.open .tabText {
+    width: 100%;
+    /* width: auto; */
 }
 
 .menu {
@@ -23,10 +44,12 @@ body {
 }
 
 .fluentRoot {
-    transition: grid-template-columns, 300ms;
+    transition-property: grid-template-columns;
+    transition-duration: var(--durationFaster);
+    transition-timing-function: var(--curveDecelerateMax);
     display: grid;
-    grid-template-rows: auto auto 4fr;
-    grid-template-columns: auto 4fr;
+    grid-template-rows: 3.3rem 3rem auto auto min-content;
+    grid-template-columns: 3rem auto auto;
     grid-template-areas: 
         "header header header"
         "nav menu menu"
@@ -39,15 +62,22 @@ body {
     margin: 0;
 }
 
+.fluentRoot:has(.sidebar.open) {
+    grid-template-columns: 15rem 4fr 4fr;
+}
+
 .sidebar {
+    padding-left: 0.5rem;
     grid-area: nav;
-    /* position: sticky; */
-    /* z-index: 4000000; */
     height: 100%;
-    min-width: 0px;
+    min-width: 3rem;
+    /* width: auto; */
     overflow-y: auto;
     overflow-x: hidden;
-    grid-template-columns: 0fr max-content;
+
+    transition-property: all;
+    transition-duration: var(--durationFaster);
+    transition-timing-function: var(--curveDecelerateMax);
 }
 
 /* .sidebar .fui-Tab span>span {
@@ -61,10 +91,13 @@ body {
     column-gap: 0.5rem;
     display: flex;
     flex-direction: row;
-    padding-left: 1rem;
+    padding-left: 0.5rem;
+    
+    /* padding-left: 1rem; */
 }
 
 .content {
+    padding: 20px;
     grid-area: content;
     height: 100%;
     width: 100%;
@@ -76,10 +109,4 @@ body {
     z-index: 1000 !important;
 } */
 
-.sidebar.open {
-    grid-template-columns: 1fr max-content;
-}
-/* 
-.sidebar.open .fui-Tab span>span {
-    display: inherit
-} */
+
