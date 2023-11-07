@@ -94,6 +94,7 @@ module FundraisersPage =
                     (api.GetFundraisers) 
                     () 
                     (fun res -> (res |> Array.map FundraiserInfo.FromServer) |> DataLoaded)
+                
             model, remoteMsg
         | DataLoaded data ->
             {model with Fundraisers = data}, Elmish.Cmd.none
@@ -111,6 +112,7 @@ module FundraisersPage =
     let private grid model = 
         
         JS.jsx $"""<{Components.DataGrid}
+                        style={ {|padding="20px"|} }
                         items={model.Fundraisers}
                         columns={columns}
                         sortable
@@ -126,13 +128,5 @@ module FundraisersPage =
                     </{Components.DataGrid}>
                     """
     let view model dispatch =
-        div [] [
-            div [
-                "style", {|
-                    padding="20px"
-                |}
-            ] [                    
                 grid model
-            ]
-        ]
         
