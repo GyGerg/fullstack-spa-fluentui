@@ -4,6 +4,7 @@ open WebSharper
 open WebSharper.JavaScript
 open WebSharper.React
 open WebSharper.FluentUI.React
+open WsReactExample.Client
 
 [<JavaScript>]
 module Topbar =
@@ -36,12 +37,6 @@ module Topbar =
             ]
         ]
 
-    let rec [<Inline>] private MenuTrigger<'a> = JS.Import<'a>(nameof(MenuTrigger), "@fluentui/react-components")
-    let rec [<Inline>] private MenuPopover<'a> = JS.Import<'a>(nameof(MenuPopover), "@fluentui/react-components")
-    let rec [<Inline>] private MenuItem<'a> = JS.Import<'a>(nameof(MenuItem), "@fluentui/react-components")
-
-    let rec [<Inline>] private DialogBody<'a> = JS.Import<'a>(nameof(DialogBody), "@fluentui/react-components")
-    let rec [<Inline>] private DialogContent<'a> = JS.Import<'a>(nameof(DialogContent), "@fluentui/react-components")
 
     let [<Inline>] private WrapInMenu children trigger =
         Helpers.menu [] [
@@ -52,36 +47,7 @@ module Topbar =
         ]
 
     let [<Inline>] private WrapInSettingsDialog settingsState dispatch trigger =
-        Helpers.dialog [
-            "modalType", "modal"
-        ] [
-            Helpers.Dialog.trigger [] [trigger]
-            Helpers.Dialog.surface [
-                "className", "dialogClass"
-                "mountNode", {|className= "dialogContainer"|}
-            ] [
-                ReactHelpers.Elt DialogContent [] [
-                    Helpers.Dialog.title [] [
-                        // Html.h3 [] [Html.text "Settings"]
-                    ]
-                    ReactHelpers.Elt DialogContent [
-                        "style", {|
-                            align="right"
-                        |}
-                    ] [
-                        WsReactExample.Client.Pages.SettingsPage.view settingsState dispatch  
-                    ]
-                    Helpers.Dialog.actions [
-                        "fluid", true
-                    ] [
-                        // Helpers.button ["appearance", "secondary"] [Html.text "Close"]
-                    ]
-                ]
-            ]
-                        
-        ]
-
-    
+        Utils.WrapInDialog "dialogClass" (Some <| JS.Document.GetElementsByClassName("container")[0]) (Pages.SettingsPage.view settingsState dispatch) trigger    
 
     let inline private ProfileButton() =
         JS.jsx $"""

@@ -9,7 +9,8 @@ open WebSharper.FluentUI.React
 module PageCard =
     let render (title:string) (child:React.Element) =
         Helpers.card [
-                "style", {|rowGap="50px";|}
+                "className", "page-card"
+                // "style", {|rowGap="50px"; padding="20px"|}
             ] [
                 Helpers.cardHeader [] [Html.h3 [] [Html.text title]]
                 Helpers.cardPreview [] [

@@ -102,23 +102,24 @@ module Client =
                     {Components.Topbar.render model.Settings (SettingsMsg >> dispatch) (nameof(WsReactExample)) }
                     <div className="container">
                         {lazyView2 Components.Sidebar.view model.Sidebar (SidebarMsg >> dispatch)}
-                        <main className="content" >
+                        <main className="content">
                             <{Toolbar} className="menu" style={ {|backgroundColor=tokens.colorNeutralBackground2|} }>
                                 <{ToolbarButton} icon={{<{Icons.ArrowLeftRegular} />}} ></{ToolbarButton}>
                                 <{ToolbarButton} icon={{<{Icons.MapFilled} color={tokens.colorPaletteGreenForeground2}/>}}>Open in Maps</{ToolbarButton}>
-                                <{ToolbarButton} >Left Popup</{ToolbarButton}>
-                                <{ToolbarButton} >Right Popup</{ToolbarButton}>
+                                {Utils.WrapInDialog "sideDialog dialogLeft" (Some <| JS.Document.GetElementsByClassName("container")[0]) (SettingsPage.view model.Settings (SettingsMsg >> dispatch)) (FluentUI.React.Helpers.Toolbar.button [] [text "Left Popup"])}
+                                {Utils.WrapInDialog "sideDialog dialogRight" (Some <| JS.Document.GetElementsByClassName("container")[0]) (SettingsPage.view model.Settings (SettingsMsg >> dispatch)) (FluentUI.React.Helpers.Toolbar.button [] [text "Right Popup"])}
                             </{Toolbar}>
                             <div className="content-container">
                                 { 
                                     
-                                    PageCard.render <|| (
+                                    (
                                         match model.Sidebar.CurrentPage with
-                                        | Domain.Pages.Counter -> "Counter", lazyView2 CounterPage.view model.Counter (CounterMsg >> dispatch)
-                                        | Domain.Pages.Fundraisers -> "Fundraisers", FundraisersPage.view model.Fundraisers (FundraisersMsg >> dispatch)
-                                        | Domain.Pages.Settings -> "Settings", SettingsPage.view model.Settings (SettingsMsg >> dispatch)
-                                        | Domain.Pages.Showcase -> "Showcase", ShowcasePage.view model.Showcase (ShowcaseMsg >> dispatch)
+                                        | Domain.Pages.Counter -> nameof(Domain.Pages.Counter), lazyView2 CounterPage.view model.Counter (CounterMsg >> dispatch)
+                                        | Domain.Pages.Fundraisers -> nameof(Domain.Pages.Fundraisers), FundraisersPage.view model.Fundraisers (FundraisersMsg >> dispatch)
+                                        | Domain.Pages.Settings -> nameof(Domain.Pages.Settings), SettingsPage.view model.Settings (SettingsMsg >> dispatch)
+                                        | Domain.Pages.Showcase -> nameof(Domain.Pages.Showcase), ShowcasePage.view model.Showcase (ShowcaseMsg >> dispatch)
                                     )
+                                    ||> PageCard.render
                                 }
                             </div>
                             <aside className="dialogContainer" id="dialogContainer"></aside>
