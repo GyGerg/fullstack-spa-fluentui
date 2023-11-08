@@ -18,8 +18,7 @@ module SettingsPage =
     let view model dispatch =
         
         JS.jsx 
-            $"""<div style={ {| display="flex"; flexDirection="column"; flexGrow=true; height="100%"; width="100%"|} }>
-            <h3>Settings</h3>
+            $"""<div style={ {| display="flex"; flexDirection="column"; flexGrow=true; justifyContent="flex-end";|} }>
             <{Components.Switch} 
                 onChange={new System.Action<obj, obj>(fun (evt:obj) (data:obj) -> dispatch (DarkModeChange data?``checked``))}
                 checked={model.UseDarkMode}

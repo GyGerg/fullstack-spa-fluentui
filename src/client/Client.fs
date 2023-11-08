@@ -20,6 +20,7 @@ module Client =
     | FundraisersMsg of FundraisersPage.Message
     | SidebarMsg of Components.Sidebar.Message
     | ShowcaseMsg of ShowcasePage.Message
+    | ResizedToMobile of bool
 
     type Model = {
         Counter: CounterPage.Model
@@ -27,6 +28,8 @@ module Client =
         Fundraisers: FundraisersPage.Model
         Sidebar: Components.Sidebar.Model
         Showcase: ShowcasePage.Model
+
+        IsMobile: bool
     }
 
     let init () = 
@@ -41,6 +44,8 @@ module Client =
             }
             Sidebar = fst <| Components.Sidebar.init()
             Showcase = fst <| ShowcasePage.init()
+
+            IsMobile = false
         }, Cmd.none
 
     // let inline spread a = !...a
@@ -76,6 +81,8 @@ module Client =
             | Components.Sidebar.ToggleOpen -> 
                 printfn $"Is sidebar open: {newSidebar.IsOpen}"
                 {model with Sidebar=newSidebar}, Cmd.none
+
+        | ResizedToMobile isMobile -> {model with IsMobile=isMobile} , Cmd.none
     
     [<Inline>]
     let tokens = FluentUI.React.Styling.tokens
@@ -91,34 +98,34 @@ module Client =
         let darkTheme = if model.Settings.UseTeamsTheme then Themes.teamsDarkTheme else Themes.webDarkTheme
         let lightTheme = if model.Settings.UseTeamsTheme then Themes.teamsLightTheme else Themes.webLightTheme
         JS.jsx $"""
-            
-            <{FluentProvider} theme={if model.Settings.UseDarkMode then darkTheme else lightTheme}>
-                <div className="fluentRoot">
+                    <{FluentProvider} theme={if model.Settings.UseDarkMode then darkTheme else lightTheme}>
                     {Components.Topbar.render model.Settings (SettingsMsg >> dispatch) (nameof(WsReactExample)) }
-                    {lazyView2 Components.Sidebar.view model.Sidebar (SidebarMsg >> dispatch)}
-                    <{Toolbar} className="menu" style={ {|backgroundColor=tokens.colorNeutralBackground2|} }>
-                        <{ToolbarButton} icon={{<{Icons.ArrowLeftRegular} />}} >Back</{ToolbarButton}>
-                        <{ToolbarButton} icon={{<{Icons.MapFilled} color={tokens.colorPaletteGreenForeground2}/>}}>Open in Maps</{ToolbarButton}>
-                        <{ToolbarButton} >Button 1</{ToolbarButton}>
-                        <{ToolbarButton} >Button 2</{ToolbarButton}>
-                        <{ToolbarButton} >Button 3</{ToolbarButton}>
-                        <{ToolbarButton} >Button 4</{ToolbarButton}>
-                    </{Toolbar}>
-                    <div className="content" >
-                        { 
-                            
-                            (
-                                match model.Sidebar.CurrentPage with
-                                | Domain.Pages.Counter -> lazyView2 CounterPage.view model.Counter (CounterMsg >> dispatch)
-                                | Domain.Pages.Fundraisers -> lazyView2 FundraisersPage.view model.Fundraisers (FundraisersMsg >> dispatch)
-                                | Domain.Pages.Settings -> lazyView2 SettingsPage.view model.Settings (SettingsMsg >> dispatch)
-                                | Domain.Pages.Showcase -> ShowcasePage.view model.Showcase (ShowcaseMsg >> dispatch)
-                            )
-                        }
-                        <aside className="dialogContainer" id="dialogContainer"></aside>
+                    <div className="container">
+                        {lazyView2 Components.Sidebar.view model.Sidebar (SidebarMsg >> dispatch)}
+                        <main className="content" >
+                            <{Toolbar} className="menu" style={ {|backgroundColor=tokens.colorNeutralBackground2|} }>
+                                <{ToolbarButton} icon={{<{Icons.ArrowLeftRegular} />}} ></{ToolbarButton}>
+                                <{ToolbarButton} icon={{<{Icons.MapFilled} color={tokens.colorPaletteGreenForeground2}/>}}>Open in Maps</{ToolbarButton}>
+                                <{ToolbarButton} >Left Popup</{ToolbarButton}>
+                                <{ToolbarButton} >Right Popup</{ToolbarButton}>
+                            </{Toolbar}>
+                            <div className="content-container">
+                                { 
+                                    
+                                    PageCard.render <|| (
+                                        match model.Sidebar.CurrentPage with
+                                        | Domain.Pages.Counter -> "Counter", lazyView2 CounterPage.view model.Counter (CounterMsg >> dispatch)
+                                        | Domain.Pages.Fundraisers -> "Fundraisers", FundraisersPage.view model.Fundraisers (FundraisersMsg >> dispatch)
+                                        | Domain.Pages.Settings -> "Settings", SettingsPage.view model.Settings (SettingsMsg >> dispatch)
+                                        | Domain.Pages.Showcase -> "Showcase", ShowcasePage.view model.Showcase (ShowcaseMsg >> dispatch)
+                                    )
+                                }
+                            </div>
+                            <aside className="dialogContainer" id="dialogContainer"></aside>
+                        </main>
                     </div>
-                </div>
-            </{FluentProvider}>
+                    <footer className="footer"><h3>Status: online</h3></footer>
+                    </{FluentProvider}>
         """
         
 
@@ -127,6 +134,10 @@ module Client =
         
         ServerCommunication.fetchVal()
         
+        let sizeSubscribe (model:Model) =
+            [ ["resizeEvt"], Utils.resizeSub ResizedToMobile]
+
         Program.mkProgram init update view
         |> Program.withReactSynchronous "root"
+        |> Program.withSubscription sizeSubscribe 
         |> Program.run

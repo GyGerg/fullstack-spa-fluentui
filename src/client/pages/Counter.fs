@@ -20,7 +20,8 @@ module CounterPage =
     
     [<Inline>]
     let buttonInline (click: MouseEvent -> unit) (icon:string) (text:string) : React.Element =
-        JS.jsx $"""<{Components.CompoundButton} onClick={click} appearance="primary" icon={{<{icon} />}}>
+        let isMobile = WsReactExample.Client.Utils.isMobile()
+        JS.jsx $"""<{Components.CompoundButton} onClick={click} size={if isMobile then "small" else "medium"} appearance="primary"  icon={{<{icon} />}}>
                 {text}
             </{Components.CompoundButton}>"""
     
@@ -35,21 +36,10 @@ module CounterPage =
         }, Elmish.Cmd.none
     
     let view model dispatch : React.Element =
-        Helpers.card [
-            "onClick", ignore
-            "style", {|rowGap="50px";|}
+        Html.div [
+            "style", {| display="flex"; flexDirection="row"; justifyContent="center"; alignItems="center"; columnGap="20px"|}
         ] [
-            Helpers.cardHeader [] [Html.h3 [] [Html.text "Counter"]]
-            Helpers.cardPreview [] [
-                Html.div [
-                    "style", {| display="flex"; flexDirection="row"; justifyContent="center"; alignItems="center"; columnGap="20px"|}
-                ] [
-                    buttonInline (fun _ -> dispatch Increment) Icons.AddRegular "Increment"
-                    Html.text $"%i{model.Count}"
-                    buttonInline (fun _ -> dispatch Decrement) Icons.SubtractRegular "Decrement"
-                ]
-            ]
-            Helpers.cardFooter [] [
-                Html.text "footer helye"
-            ]
+            buttonInline (fun _ -> dispatch Increment) Icons.AddRegular "Increment"
+            Html.text $"%i{model.Count}"
+            buttonInline (fun _ -> dispatch Decrement) Icons.SubtractRegular "Decrement"
         ]

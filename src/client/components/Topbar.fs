@@ -127,14 +127,16 @@ module Topbar =
         JS.jsx $"""<header className="header" style={ {|
             backgroundColor=backgroundColorToken; 
             color=textColorToken |} } >
-            <{Components.Button} appearance="transparent" icon={{<{Icons.GridDotsFilled} color={textColorToken} as="div" />}} size="large" />
-            <h3>{title}</h3>
-            <div style={ {|marginLeft="auto"; display="flex"; flexDirection="row"; justifyContent="end"; alignItems="center"; columnGap="0.5rem"; paddingRight="1rem" |} }>
+            <section style={ {|display="flex"; flexDirection="row"; columnGap="0.5rem"|} }>
+                <{Components.Button} appearance="transparent" icon={{<{Icons.GridDotsFilled} color={textColorToken} as="div" />}} size="large" />
+                <h3>{title}</h3>
+            </section>
+            <menu style={ {|display="flex"; flexDirection="row"; justifyContent="end"; alignItems="center"; columnGap="0.5rem"; paddingRight="0.5rem" |} }>
                 {SettingsButton textColorToken settingsState settingsDispatch}
                 {NotificationsButton textColorToken [
                     {Title="Notification";Content="Congrats for your notification!"}
                     {Title="Another one";Content="Wow someone's famous!"}
                 ]}
                 {ProfileButton()}
-            </div>
+            </menu>
         </header>"""

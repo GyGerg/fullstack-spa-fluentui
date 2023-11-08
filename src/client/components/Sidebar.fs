@@ -53,12 +53,16 @@ module Sidebar =
 
     [<Inline>]
     let inline private tabsTitle (isOpen:bool) (title:string) =
-        JS.jsx $"""<h4 style={ {|paddingLeft=Styling.tokens.spacingHorizontalM; visibility=if isOpen then "inherit" else "hidden"|} }>{title}</h4>"""
+        JS.jsx $"""<h4 
+                        className="hide-on-mobile"
+                        style={ {|paddingLeft=Styling.tokens.spacingHorizontalM; visibility=if isOpen then "inherit" else "hidden"|} }>{title}</h4>"""
     let [<Inline>] private onToggleClick(dispatch:Elmish.Dispatch<Message>) =
         dispatch ToggleOpen
     let view (model:Model) dispatch : React.Element =
+        let isSmall = WsReactExample.Client.Utils.isMobile()
+        let isOpen = if isSmall then false else model.IsOpen
         JS.jsx $"""
-            <{Components.TabList} as="nav" vertical size="large" appearance="subtle" style={ {|backgroundColor=Styling.tokens.colorNeutralBackground3 |} } className={if model.IsOpen then "sidebar open" else "sidebar"}
+            <{Components.TabList} as="nav" vertical size="large" appearance="subtle" style={ {|backgroundColor=Styling.tokens.colorNeutralBackground3 |} } className={if isOpen then "sidebar open" else "sidebar"}
                 selectedValue={match model.CurrentPage with
                                 | Fundraisers _ -> "fundraisers"
                                 | Counter _ -> "counter"
@@ -77,13 +81,14 @@ module Sidebar =
                     content="Toggle Sidebar on/off"
                 >
                     <{Components.Button} 
+                        className="hide-on-mobile"
                         size="large"
                         icon={{<{Icons.LineHorizontal3Regular} as="div" />}} appearance="transparent"  
                         style={ {| margin="0px"; width="100%" |} }
                         onClick={fun () -> dispatch ToggleOpen}
                     ></{Components.Button}>
                 </{Components.Tooltip}>
-                {tabsTitle model.IsOpen "Pages"}
-                {Array.map (fun p -> pageTab model.IsOpen p) pages}
+                {tabsTitle isOpen "Pages"}
+                {Array.map (fun p -> pageTab isOpen p) pages}
             </{Components.TabList}>
         """
