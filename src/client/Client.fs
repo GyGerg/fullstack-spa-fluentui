@@ -114,7 +114,7 @@ module Client =
                                     
                                     (
                                         match model.Sidebar.CurrentPage with
-                                        | Domain.Pages.Counter -> nameof(Domain.Pages.Counter), lazyView2 CounterPage.view model.Counter (CounterMsg >> dispatch)
+                                        | Domain.Pages.Counter -> nameof(Domain.Pages.Counter), CounterPage.view model.Counter (CounterMsg >> dispatch)
                                         | Domain.Pages.Fundraisers -> nameof(Domain.Pages.Fundraisers), FundraisersPage.view model.Fundraisers (FundraisersMsg >> dispatch)
                                         | Domain.Pages.Settings -> nameof(Domain.Pages.Settings), SettingsPage.view model.Settings (SettingsMsg >> dispatch)
                                         | Domain.Pages.Showcase -> nameof(Domain.Pages.Showcase), ShowcasePage.view model.Showcase (ShowcaseMsg >> dispatch)

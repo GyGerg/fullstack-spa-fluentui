@@ -37,7 +37,7 @@ module CounterPage =
     
     let view model dispatch : React.Element =
         Html.div [
-            "style", {| display="flex"; flexDirection="row"; justifyContent="center"; alignItems="center"; columnGap="20px"|}
+            "style", {| display="flex"; flexDirection=(if WsReactExample.Client.Utils.isMobile() then "column" else "row"); justifyContent="center"; alignItems="center"; columnGap="20px"|}
         ] [
             buttonInline (fun _ -> dispatch Increment) Icons.AddRegular "Increment"
             Html.text $"%i{model.Count}"
