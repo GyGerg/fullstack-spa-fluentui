@@ -10,39 +10,50 @@ open WsReactExample.Client.Domain
 module Sidebar =
     open WebSharper.React.Html
 
-    type Model = { 
-        IsOpen: bool
-        CurrentPage: Pages
-    }
-
-    type Message =
-    | PageChanged of Pages
-    | ToggleOpen
-
-
     type TabInfo = {
         TabValue:string
         Name:string
         Icon: string
-
     }
+    
+    type SidebarItem = 
+    | Tab of TabInfo
+    | Other of React.Element
+
+
+    type Model<'PageType when 'PageType: equality> = { 
+        IsOpen: bool
+        CurrentPage: 'PageType
+        Children: SidebarItem array
+    }
+
+    type Message<'PageType when 'PageType: equality> =
+    | PageChanged of 'PageType
+    | ToggleOpen
+
+
+    
+    let pages = [|
+        Other(h3 [] [text "Pages"])
+        Tab {TabValue="fundraisers";Name="Fundraisers"; Icon=Icons.CurrencyDollarEuroRegular}
+        Tab {TabValue="counter";Name="Counter"; Icon=Icons.CalculatorRegular}
+        Tab {TabValue="showcase";Name="Showcase"; Icon=Icons.WindowAppsRegular}
+        Other(h3 [] [text "Other elements"])
+        Tab {TabValue="settings";Name="Settings"; Icon=Icons.SettingsRegular}
+    |]
+
     let init () =
         {
             IsOpen = true
             CurrentPage = Counter
+            Children = pages
         }, Elmish.Cmd.none
 
-    let update msg model : Model * Elmish.Cmd<Message> =
+    let update msg model : Model<'PageType> * Elmish.Cmd<Message<'PageType>> =
         match msg with
         | PageChanged page -> {model with CurrentPage=page}, Elmish.Cmd.none
         | ToggleOpen -> {model with IsOpen = not model.IsOpen}, Elmish.Cmd.none
 
-    let pages = [|
-        {TabValue="fundraisers";Name="Fundraisers";Icon=Icons.CurrencyDollarEuroRegular}
-        {TabValue="counter";Name="Counter";Icon=Icons.CalculatorRegular}
-        {TabValue="settings";Name="Settings";Icon=Icons.SettingsRegular}
-        {TabValue="showcase";Name="Showcase";Icon=Icons.WindowAppsRegular}
-    |]
 
 
     [<Inline>]
@@ -56,25 +67,17 @@ module Sidebar =
         JS.jsx $"""<h4 
                         className="hide-on-mobile"
                         style={ {|paddingLeft=Styling.tokens.spacingHorizontalM; visibility=if isOpen then "inherit" else "hidden"|} }>{title}</h4>"""
-    let [<Inline>] private onToggleClick(dispatch:Elmish.Dispatch<Message>) =
+    let [<Inline>] private onToggleClick(dispatch:Elmish.Dispatch<Message<'PageType>>) =
         dispatch ToggleOpen
-    let view (model:Model) dispatch : React.Element =
+    let view<'PageType when 'PageType: equality> (model:Model<'PageType>) dispatch : React.Element =
         let isSmall = WsReactExample.Client.Utils.isMobile()
         let isOpen = if isSmall then false else model.IsOpen
         JS.jsx $"""
             <{Components.TabList} as="nav" vertical size="large" appearance="subtle" style={ {|backgroundColor=Styling.tokens.colorNeutralBackground3 |} } className={if isOpen then "sidebar open" else "sidebar"}
-                selectedValue={match model.CurrentPage with
-                                | Fundraisers _ -> "fundraisers"
-                                | Counter _ -> "counter"
-                                | Settings _ -> "settings"
-                                | Showcase -> "showcase"}
+                selectedValue={model.CurrentPage}
                 // at the time of writing (2023.11), multiple-param lambdas must be wrapped in a System.Action/Func to be properly compiled to JS
-                onTabSelect={new System.Action<obj,{|value:string|}>(fun a b -> 
-                    let newPage = match b.value with
-                                    | "fundraisers" -> Fundraisers
-                                    | "settings" -> Settings
-                                    | "showcase" -> Showcase
-                                    | _ -> Counter
+                onTabSelect={new System.Action<obj,{|value:'PageType|}>(fun a b -> 
+                    let newPage = b.value
                     if newPage <> model.CurrentPage then dispatch (PageChanged newPage))}>
                 <{Components.Tooltip}
                     relationship="label"
@@ -89,6 +92,10 @@ module Sidebar =
                     ></{Components.Button}>
                 </{Components.Tooltip}>
                 {tabsTitle isOpen "Pages"}
-                {Array.map (fun p -> pageTab isOpen p) pages}
+                {
+                    Array.map (function 
+                                | Tab p -> pageTab isOpen p
+                                | Other elt -> elt) pages
+                }
             </{Components.TabList}>
         """

@@ -6,7 +6,7 @@ module Domain =
 
 
     type Pages =
-    | Counter
-    | Fundraisers
-    | Settings
-    | Showcase
+    | [<Constant "counter">] Counter
+    | [<Constant "fundraisers">] Fundraisers
+    | [<Constant "settings">] Settings
+    | [<Constant "showcase">] Showcase

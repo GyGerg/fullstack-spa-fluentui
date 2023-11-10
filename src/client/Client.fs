@@ -18,7 +18,7 @@ module Client =
     | CounterMsg of CounterPage.Message
     | SettingsMsg of SettingsPage.SettingsMessage
     | FundraisersMsg of FundraisersPage.Message
-    | SidebarMsg of Components.Sidebar.Message
+    | SidebarMsg of Components.Sidebar.Message<Domain.Pages>
     | ShowcaseMsg of ShowcasePage.Message
     | ResizedToMobile of bool
 
@@ -26,7 +26,7 @@ module Client =
         Counter: CounterPage.Model
         Settings: SettingsPage.Model
         Fundraisers: FundraisersPage.Model
-        Sidebar: Components.Sidebar.Model
+        Sidebar: Components.Sidebar.Model<Domain.Pages>
         Showcase: ShowcasePage.Model
 
         IsMobile: bool
@@ -82,7 +82,8 @@ module Client =
                 printfn $"Is sidebar open: {newSidebar.IsOpen}"
                 {model with Sidebar=newSidebar}, Cmd.none
 
-        | ResizedToMobile isMobile -> {model with IsMobile=isMobile} , Cmd.none
+        | ResizedToMobile isMobile when isMobile <> model.IsMobile -> {model with IsMobile=isMobile} , Cmd.none
+        | ResizedToMobile _ -> model, Cmd.none
     
     [<Inline>]
     let tokens = FluentUI.React.Styling.tokens

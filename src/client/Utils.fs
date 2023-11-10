@@ -7,7 +7,7 @@ open WebSharper.FluentUI.React
 
 [<JavaScript>]
 module Utils =
-    let isMobile() = not <| JS.Window.MatchMedia("all and (min-width: 768px)").Matches
+    let isMobile() = JS.Window.MatchMedia("all and (max-width: 600px)").Matches
 
     let resizeSub onResize =
         let start dispatch =
