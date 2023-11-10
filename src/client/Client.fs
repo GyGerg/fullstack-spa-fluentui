@@ -98,13 +98,13 @@ module Client =
         let darkTheme = if model.Settings.UseTeamsTheme then Themes.teamsDarkTheme else Themes.webDarkTheme
         let lightTheme = if model.Settings.UseTeamsTheme then Themes.teamsLightTheme else Themes.webLightTheme
         
-        let toolbar = Components.Toolbar.view {
+        let mainToolbar = Components.Toolbar.view {
             children = [
                 Components.Toolbar.ToolbarButton {
-                    onClick=id; 
+                    onClick=None; 
                     Title=Components.Toolbar.Icon (ReactHelpers.Elt Icons.ArrowLeftRegular [] [])}
                 Components.Toolbar.ToolbarButton {
-                    onClick=id;
+                    onClick=None;
                     Title=
                         let icn = 
                             ReactHelpers.Elt Icons.MapFilled [
@@ -114,26 +114,29 @@ module Client =
                 }
                 Components.Toolbar.WrappedToolbarButton 
                     (Utils.WrapInDialog "sideDialog dialogLeft" None (SettingsPage.view model.Settings (SettingsMsg >> dispatch)),
-                    {onClick=id;Title=Components.Toolbar.Text "Settings"}
+                    {onClick=None;Title=Components.Toolbar.Text "Settings"}
                 )
             ]
         }
+
+        let inlineToolbar = JS.jsx $"""
+            <{Toolbar} className="menu" style={ {|backgroundColor=tokens.colorNeutralBackground2|} }>
+                <{ToolbarButton} icon={{<{Icons.ArrowLeftRegular} />}} ></{ToolbarButton}>
+                <{ToolbarButton} icon={{<{Icons.MapFilled} color={tokens.colorPaletteGreenForeground2}/>}}>Open in Maps</{ToolbarButton}>
+                {Utils.WrapInDialog "sideDialog dialogLeft" (Some <| JS.Document.GetElementsByClassName("container")[0]) (SettingsPage.view model.Settings (SettingsMsg >> dispatch)) (FluentUI.React.Helpers.Toolbar.button [] [text "Left Popup"])}
+                {Utils.WrapInDialog "sideDialog dialogRight" (Some <| JS.Document.GetElementsByClassName("container")[0]) (SettingsPage.view model.Settings (SettingsMsg >> dispatch)) (FluentUI.React.Helpers.Toolbar.button [] [text "Right Popup"])}
+            </{Toolbar}>
+        """
         JS.jsx $"""
                     <{FluentProvider} theme={if model.Settings.UseDarkMode then darkTheme else lightTheme}>
                     {Components.Topbar.render model.Settings (SettingsMsg >> dispatch) (nameof(WsReactExample)) }
-                    {toolbar}
+                    {mainToolbar}
                     <div className="container">
                         {lazyView2 Components.Sidebar.view model.Sidebar (SidebarMsg >> dispatch)}
                         <main className="content">
-                            <{Toolbar} className="menu" style={ {|backgroundColor=tokens.colorNeutralBackground2|} }>
-                                <{ToolbarButton} icon={{<{Icons.ArrowLeftRegular} />}} ></{ToolbarButton}>
-                                <{ToolbarButton} icon={{<{Icons.MapFilled} color={tokens.colorPaletteGreenForeground2}/>}}>Open in Maps</{ToolbarButton}>
-                                {Utils.WrapInDialog "sideDialog dialogLeft" (Some <| JS.Document.GetElementsByClassName("container")[0]) (SettingsPage.view model.Settings (SettingsMsg >> dispatch)) (FluentUI.React.Helpers.Toolbar.button [] [text "Left Popup"])}
-                                {Utils.WrapInDialog "sideDialog dialogRight" (Some <| JS.Document.GetElementsByClassName("container")[0]) (SettingsPage.view model.Settings (SettingsMsg >> dispatch)) (FluentUI.React.Helpers.Toolbar.button [] [text "Right Popup"])}
-                            </{Toolbar}>
+                            {inlineToolbar}
                             <div className="content-container">
                                 { 
-                                    
                                     (
                                         match model.Sidebar.CurrentPage with
                                         | Domain.Pages.Counter -> nameof(Domain.Pages.Counter), CounterPage.view model.Counter (CounterMsg >> dispatch)

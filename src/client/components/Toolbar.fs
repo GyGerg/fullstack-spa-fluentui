@@ -14,7 +14,7 @@ module Toolbar =
     | Icon of React.Element
     | TextAndIcon of string * React.Element
     type ToolbarItem = {
-        onClick: unit -> unit
+        onClick: (unit -> unit) option
         Title: TitleType
     }
 
@@ -30,6 +30,9 @@ module Toolbar =
             match toolbarItem.Title with
             | Text _ -> ()
             | Icon elt | TextAndIcon (_,elt) -> yield "icon", elt
+            match toolbarItem.onClick with
+            | Some fn -> yield "onClick", fn
+            | None -> ()
         ] [
             match toolbarItem.Title with
             | Text txt | TextAndIcon(txt,_) -> Html.text txt
