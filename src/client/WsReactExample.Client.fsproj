@@ -12,6 +12,7 @@
     <Compile Include="pages/Fundraisers.fs" />
     <Compile Include="pages/Showcase.fs" />
     <Compile Include="pages/Settings.fs" />
+    <Compile Include="components/Toolbar.fs" />
     <Compile Include="components/PageCard.fs" />
     <Compile Include="components/Sidebar.fs" />
     <Compile Include="components/Topbar.fs" />

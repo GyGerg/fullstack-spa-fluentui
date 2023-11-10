@@ -94,13 +94,34 @@ module Client =
                 {text}
             </{CompoundButton}>"""
 
-    
     let view model dispatch = 
         let darkTheme = if model.Settings.UseTeamsTheme then Themes.teamsDarkTheme else Themes.webDarkTheme
         let lightTheme = if model.Settings.UseTeamsTheme then Themes.teamsLightTheme else Themes.webLightTheme
+        
+        let toolbar = Components.Toolbar.view {
+            children = [
+                Components.Toolbar.ToolbarButton {
+                    onClick=id; 
+                    Title=Components.Toolbar.Icon (ReactHelpers.Elt Icons.ArrowLeftRegular [] [])}
+                Components.Toolbar.ToolbarButton {
+                    onClick=id;
+                    Title=
+                        let icn = 
+                            ReactHelpers.Elt Icons.MapFilled [
+                                "color", tokens.colorPaletteGreenForeground2
+                            ] []
+                        Components.Toolbar.TextAndIcon ("Open in Maps", icn)
+                }
+                Components.Toolbar.WrappedToolbarButton 
+                    (Utils.WrapInDialog "sideDialog dialogLeft" None (SettingsPage.view model.Settings (SettingsMsg >> dispatch)),
+                    {onClick=id;Title=Components.Toolbar.Text "Settings"}
+                )
+            ]
+        }
         JS.jsx $"""
                     <{FluentProvider} theme={if model.Settings.UseDarkMode then darkTheme else lightTheme}>
                     {Components.Topbar.render model.Settings (SettingsMsg >> dispatch) (nameof(WsReactExample)) }
+                    {toolbar}
                     <div className="container">
                         {lazyView2 Components.Sidebar.view model.Sidebar (SidebarMsg >> dispatch)}
                         <main className="content">
