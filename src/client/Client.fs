@@ -56,7 +56,7 @@ module Client =
             let updated,_ = CounterPage.update msg model.Counter
             {model with Counter = updated}, Cmd.none
 
-        | SettingsMsg ( settingsMsg) -> 
+        | SettingsMsg settingsMsg -> 
             let newSettings, _ = SettingsPage.update settingsMsg model.Settings
             {model with Settings = newSettings}, Cmd.none
         | FundraisersMsg fundraisersMsg ->
@@ -88,7 +88,6 @@ module Client =
     [<Inline>]
     let tokens = FluentUI.React.Styling.tokens
 
-    [<Inline>]
     let buttonInline (click: MouseEvent -> unit) (icon:string) (text:string) : React.Element =
         JS.jsx $"""<{CompoundButton} onClick={click} appearance="primary" icon={{<{icon} />}}>
                 {text}
@@ -98,51 +97,55 @@ module Client =
         let darkTheme = if model.Settings.UseTeamsTheme then Themes.teamsDarkTheme else Themes.webDarkTheme
         let lightTheme = if model.Settings.UseTeamsTheme then Themes.teamsLightTheme else Themes.webLightTheme
         
-        let mainToolbar = Components.Toolbar.view {
+        let SettingsRender =
+            SettingsPage.view model.Settings (SettingsMsg >> dispatch)
+
+        let mainToolbar = Components.Toolbar.view [] {
             children = [
                 Components.Toolbar.ToolbarButton {
                     onClick=None; 
-                    Title=Components.Toolbar.Icon (ReactHelpers.Elt Icons.ArrowLeftRegular [] [])}
+                    Title=Components.Toolbar.Icon (Utils.IconComponent [||] Icons.ArrowLeftRegular)
+                }
                 Components.Toolbar.ToolbarButton {
                     onClick=None;
                     Title=
                         let icn = 
-                            ReactHelpers.Elt Icons.MapFilled [
-                                "color", tokens.colorPaletteGreenForeground2
-                            ] []
+                            (Utils.IconComponent [|"color", tokens.colorPaletteGreenForeground2|] Icons.MapFilled)
                         Components.Toolbar.TextAndIcon ("Open in Maps", icn)
                 }
                 Components.Toolbar.WrappedToolbarButton 
-                    (Utils.WrapInDialog "sideDialog dialogLeft" None (SettingsPage.view model.Settings (SettingsMsg >> dispatch)),
-                    {onClick=None;Title=Components.Toolbar.Text "Settings"}
-                )
+                    (Utils.WrapInDialog "" None SettingsRender, {onClick=None;Title=Components.Toolbar.Text "Settings"})
             ]
         }
 
-        let inlineToolbar = JS.jsx $"""
-            <{Toolbar} className="menu" style={ {|backgroundColor=tokens.colorNeutralBackground2|} }>
-                <{ToolbarButton} icon={{<{Icons.ArrowLeftRegular} />}} ></{ToolbarButton}>
-                <{ToolbarButton} icon={{<{Icons.MapFilled} color={tokens.colorPaletteGreenForeground2}/>}}>Open in Maps</{ToolbarButton}>
-                {Utils.WrapInDialog "sideDialog dialogLeft" (Some <| JS.Document.GetElementsByClassName("container")[0]) (SettingsPage.view model.Settings (SettingsMsg >> dispatch)) (FluentUI.React.Helpers.Toolbar.button [] [text "Left Popup"])}
-                {Utils.WrapInDialog "sideDialog dialogRight" (Some <| JS.Document.GetElementsByClassName("container")[0]) (SettingsPage.view model.Settings (SettingsMsg >> dispatch)) (FluentUI.React.Helpers.Toolbar.button [] [text "Right Popup"])}
-            </{Toolbar}>
-        """
+        let contentToolbar = Components.Toolbar.view ["style", ["backgroundColor", box tokens.colorNeutralBackground3]] {
+            children = [
+                Components.Toolbar.ToolbarButton {onClick=None; Title=Components.Toolbar.Icon <| Utils.IconComponent [] Icons.ArrowLeftRegular}
+                Components.Toolbar.ToolbarButton {onClick=None; Title=Components.Toolbar.TextAndIcon 
+                    ("Open in Maps", Utils.IconComponent ["color", tokens.colorPaletteGreenForeground2] Icons.MapFilled)}
+                Components.Toolbar.WrappedToolbarButton
+                    (Utils.WrapInDialog "sideDialog dialogLeft" None SettingsRender, {onClick=None; Title=Components.Toolbar.Text "Left Popup"})
+                Components.Toolbar.WrappedToolbarButton
+                    (Utils.WrapInDialog "sideDialog dialogRight" None SettingsRender, {onClick=None; Title=Components.Toolbar.Text "Right Popup"})
+            ]
+        }
+        
         JS.jsx $"""
                     <{FluentProvider} theme={if model.Settings.UseDarkMode then darkTheme else lightTheme}>
                     {Components.Topbar.render model.Settings (SettingsMsg >> dispatch) (nameof(WsReactExample)) }
                     {mainToolbar}
-                    <div className="container">
+                    <div className="container" style={ {|width="100vw";height="100vh";|} }>
                         {lazyView2 Components.Sidebar.view model.Sidebar (SidebarMsg >> dispatch)}
                         <main className="content">
-                            {inlineToolbar}
+                            {contentToolbar}
                             <div className="content-container">
                                 { 
                                     (
                                         match model.Sidebar.CurrentPage with
-                                        | Domain.Pages.Counter -> nameof(Domain.Pages.Counter), CounterPage.view model.Counter (CounterMsg >> dispatch)
-                                        | Domain.Pages.Fundraisers -> nameof(Domain.Pages.Fundraisers), FundraisersPage.view model.Fundraisers (FundraisersMsg >> dispatch)
-                                        | Domain.Pages.Settings -> nameof(Domain.Pages.Settings), SettingsPage.view model.Settings (SettingsMsg >> dispatch)
-                                        | Domain.Pages.Showcase -> nameof(Domain.Pages.Showcase), ShowcasePage.view model.Showcase (ShowcaseMsg >> dispatch)
+                                        | Domain.Counter -> nameof(Domain.Counter), CounterPage.view model.Counter (CounterMsg >> dispatch)
+                                        | Domain.Fundraisers -> nameof(Domain.Fundraisers), FundraisersPage.view model.Fundraisers (FundraisersMsg >> dispatch)
+                                        | Domain.Settings -> nameof(Domain.Settings), SettingsPage.view model.Settings (SettingsMsg >> dispatch)
+                                        | Domain.Showcase -> nameof(Domain.Showcase), ShowcasePage.view model.Showcase (ShowcaseMsg >> dispatch)
                                     )
                                     ||> PageCard.render
                                 }

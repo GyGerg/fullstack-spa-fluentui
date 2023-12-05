@@ -17,6 +17,9 @@ module Utils =
                 member _.Dispose() = JS.Window.RemoveEventListener("resize", evt)}
         start
     
+    let [<Inline>] IconComponent (props:(string*obj) seq) importObj = 
+        ReactHelpers.Elt importObj props []
+
     let [<Inline>] WrapInDialog (className:string) (mountNode:obj option) (dialogContent:React.Element) trigger =
         Helpers.dialog [
             "modalType", box "modal"

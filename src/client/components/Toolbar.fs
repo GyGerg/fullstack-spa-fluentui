@@ -21,7 +21,7 @@ module Toolbar =
     type ToolbarChild =
     | ToolbarButton of ToolbarItem
     | Other of React.Element
-        /// requires a slot thing
+        /// First parameter is a function that specifies the second parameter's "position"
     | WrappedToolbarButton of (React.Element -> React.Element) * ToolbarItem 
 
     [<Inline>]
@@ -55,16 +55,10 @@ module Toolbar =
         children: ToolbarChild seq
     }
 
-    let view model = 
+    let view (props: seq<string*obj>) model = 
+        let baseProps = []
         model.children
         |> Seq.map renderToolbarChild
-        |> Helpers.toolbar [
-            "style", {|
-                height="3rem";
-                maxHeight= "fit-content";
-                overflowY= "hidden";
-                overflowX= "auto";
-            |}
-        ]
+        |> Helpers.toolbar (Seq.append baseProps props)
 
     
